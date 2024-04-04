@@ -75,6 +75,7 @@ const Cart = ({cartItems, setCartItems, setAddedToCart}) => {
           console.log('Response from server:', data);
           if (data==='success'){
             setCartItems([]);
+            setAddedToCart({});
             setOrderCheckout(true);
           }
         })
