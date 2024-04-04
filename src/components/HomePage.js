@@ -9,6 +9,7 @@ import PageNotFound from './PageNotFound';
 
 function HomePage() {
     const [cartItems, setCartItems] = useState([]);
+    const [addedToCart, setAddedToCart] = useState({});
 
     return (
       <BrowserRouter>
@@ -20,13 +21,13 @@ function HomePage() {
         <div className="body">
           <Switch>
             <Route exact path="/">
-              <Catalogue cartItems={cartItems} setCartItems={setCartItems}/>
+              <Catalogue cartItems={cartItems} setCartItems={setCartItems} addedToCart={addedToCart} setAddedToCart={setAddedToCart}/>
             </Route>
             <Route path="/cart">
-              <Cart cartItems={cartItems} setCartItems={setCartItems}/>
+              <Cart cartItems={cartItems} setCartItems={setCartItems} setAddedToCart={setAddedToCart}/>
             </Route>
             <Route path="/productinfo/:id">
-              <ProductDetails cartItems={cartItems} setCartItems={setCartItems}/>
+              <ProductDetails cartItems={cartItems} setCartItems={setCartItems} addedToCart={addedToCart} setAddedToCart={setAddedToCart}/>
             </Route>
             <Route path="*">
               <PageNotFound/>

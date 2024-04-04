@@ -3,31 +3,39 @@ import { useParams, Link } from "react-router-dom";
 import imgg from "../images/book1.jpg"
 import '../index.css';
 
-const ProductDetails = ({cartItems,setCartItems}) => {
+const ProductDetails = ({cartItems, setCartItems, addedToCart, setAddedToCart}) => {
 
     const [books,setBooks]=useState([]);
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+    const [showDeleteMessage, setShowDeleteMessage] = useState(false);
     const { id } = useParams();
     
     // Add to Cart Function
-    const handleCartItems= (book) => { 
-        const extractedFields = {
-            id: book.id,
-            bookname: book.bookname,
-            author: book.author,
-            price: book.price
-          };
+    const handleCartItems= (item) => { 
+        setCartItems(cartItems => [...cartItems, {...item, quantity:1}]);
+        setAddedToCart(prevState => ({
+            ...prevState,[item.id]:true
+        }));
 
-        // Set Shopping Cart Items or Books
-        setCartItems(cartItems => [...cartItems, {...extractedFields, quantity:1}]);
-        
-        // Show success message "Item added to cart successfully!"
         setShowSuccessMessage(true);
         setTimeout(() => {
         setShowSuccessMessage(false);
-        }, 2000);
-        
+        }, 2000);  
     };
+
+    const deleteCartItems = (item) => {
+        setCartItems(cartItems.filter(Items => Items.id != item.id)); 
+        setAddedToCart(prevState => {
+            const newState= {...prevState};
+            delete newState[item.id];
+            return newState;
+        });
+
+        setShowDeleteMessage(true);
+        setTimeout(() => {
+        setShowDeleteMessage(false); //Display Message for 2 sec
+        }, 2000);
+    }
 
     /**
      * GET Request
@@ -59,11 +67,19 @@ const ProductDetails = ({cartItems,setCartItems}) => {
             {books?.map((book)=>(
                 <div className="container mt-5">
                     <h2 className="mb-4">Product Details</h2>
+                    
+                    {showDeleteMessage && (
+                        <div className="alert alert-success mt-3" role="alert">
+                            Item removed from cart successfully!
+                        </div>
+                    )}
+
                     {showSuccessMessage && (
                         <div className="alert alert-success mt-3" role="alert">
                             Item added to cart successfully!
                         </div>
                     )}
+
                     <div className="row">
                         <div className="col-md-6">
                             <img src={imgg} alt="Product" className="img-fluid custom-img-style"/>
@@ -73,7 +89,8 @@ const ProductDetails = ({cartItems,setCartItems}) => {
                             <p>{book.BookSummary}</p>
                             <p>Author: {book.author}</p>
                             <p>Rating: {book.Ratings} of 5</p>
-                            <button className="btn btn-primary me-2" onClick={() => handleCartItems(book)}>Add to Cart</button>
+                            {!addedToCart[book.id] && (<button className="btn btn-primary me-2" onClick={() => handleCartItems(book)}>Add to Cart</button>)}
+                            {addedToCart[book.id] && (<button className="btn btn-light me-2" onClick={() => deleteCartItems(book)}>Remove from Cart</button>)}
                             <Link to="/" class="btn btn-secondary">Continue Shopping</Link>
                         </div>
                     </div>

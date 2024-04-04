@@ -3,13 +3,15 @@ import imgg from "../images/book1.jpg"
 import "../index.css"
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
-const Catalogue = ({cartItems, setCartItems}) => {
+const Catalogue = ({cartItems, setCartItems, addedToCart, setAddedToCart}) => {
     const [books,setBooks] = useState();                                // when we want to use local seach instead of API, this state contains all books
     const [sortSelected,setSortSelected] = useState('bookname');
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+    const [showDeleteMessage, setShowDeleteMessage] = useState(false);
     const [catalogueBooks,setCatalogueBooks] = useState();
     const [searchText,setSearchText] = useState('');
     const [fetchCall,setFetchCall] = useState(true);
+    //const [addedToCart, setAddedToCart] = useState({});
 
     const preventSearch = (e) => {
         e.preventDefault(); // Prevent form submission and page refresh
@@ -81,15 +83,31 @@ const Catalogue = ({cartItems, setCartItems}) => {
     
 
     // Add Items to Cart 
-    const handleCartItems= (item) => {
+    const handleCartItems = (item) => {
         setCartItems(cartItems => [...cartItems, {...item, quantity:1}]); 
+        setAddedToCart(prevState => ({
+            ...prevState,[item.id]:true
+        }));
+
         setShowSuccessMessage(true);
-        // Reset success message after a certain time
         setTimeout(() => {
         setShowSuccessMessage(false); //Display Message for 2 sec
-        }, 2000);
-        
+        }, 2000);    
     };
+
+    const deleteCartItems = (item) => {
+        setCartItems(cartItems.filter(Items => Items.id != item.id  )); 
+        setAddedToCart(prevState => {
+            const newState= {...prevState};
+            delete newState[item.id];
+            return newState;
+        });
+
+        setShowDeleteMessage(true);
+        setTimeout(() => {
+        setShowDeleteMessage(false); //Display Message for 2 sec
+        }, 2000);
+    }
 
     return (  
         <div>
@@ -125,6 +143,12 @@ const Catalogue = ({cartItems, setCartItems}) => {
                 </div>
             )}
 
+            {showDeleteMessage && (
+                <div className="alert alert-success mt-3" role="alert">
+                    Item removed from cart successfully!
+                </div>
+            )}
+
             <div className="catalogues catalougePadding">
                 
                 {catalogueBooks?.map((book)=>(
@@ -135,7 +159,8 @@ const Catalogue = ({cartItems, setCartItems}) => {
                                 <h5 className="card-title">{book.bookname}</h5>
                                 <h6>-{book.author}</h6>
                                 <p className="card-text">Price: ${book.price}</p>
-                                <button className="btn btn-primary" onClick={() => handleCartItems(book)}>Add to Cart</button>{' '}
+                                {!addedToCart[book.id] && (<button className="btn btn-primary me-2" onClick={() => handleCartItems(book)}>Add to Cart</button>)}
+                                {addedToCart[book.id] && (<button className="btn btn-light me-2" onClick={() => deleteCartItems(book)}>Remove from Cart</button>)}
                                 <Link to={'/productinfo/'+book.id}><button className="btn btn-primary">Product Details</button></Link>
                             </div>
                         </div>

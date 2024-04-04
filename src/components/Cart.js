@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from 'react-router-dom';
 import "../index.css"
 
-const Cart = ({cartItems, setCartItems}) => {
+const Cart = ({cartItems, setCartItems, setAddedToCart}) => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [orderCheckout,setOrderCheckout] = useState(false);
     const [cartEmpty,setCartEmpty] = useState(false)
@@ -24,6 +24,11 @@ const Cart = ({cartItems, setCartItems}) => {
     // Delete's Cart Item
     const deleteCartItem =(deleteID) => {
         setCartItems(cartItems.filter(Items => Items.id != deleteID  ));
+        setAddedToCart(prevState => {
+          const newState= {...prevState};
+          delete newState[deleteID];
+          return newState;
+      });
     };
 
     // Calculate the Subtotal Price
