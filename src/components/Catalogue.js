@@ -5,7 +5,7 @@ import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
 const Catalogue = ({cartItems, setCartItems}) => {
     const [books,setBooks] = useState();
-    const [sortSelected,setSortSelected] = useState('title');
+    const [sortSelected,setSortSelected] = useState('bookname');
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [catalogueBooks,setCatalogueBooks] = useState();
     const [searchText,setSearchText] = useState('');
@@ -18,7 +18,7 @@ const Catalogue = ({cartItems, setCartItems}) => {
         let sortType = event.target.value;
         setSortSelected(sortType);
         
-        // if (sortValue === 'title'){
+        // if (sortValue === 'bookname'){
         //     const sortedData = [...books].sort((a, b) => {
         //         if (a.bookname < b.bookname) return -1;
         //         if (a.bookname > b.bookname) return 1;
@@ -42,7 +42,7 @@ const Catalogue = ({cartItems, setCartItems}) => {
             setCatalogueBooks(books);
         }
         else{
-            if (sortSelected==='title'){
+            if (sortSelected==='bookname'){
                 const filteredData = books.filter(item =>
                     item.bookname.toLowerCase().includes(searchTerm.toLowerCase()));
                 setCatalogueBooks(filteredData); 
@@ -56,7 +56,11 @@ const Catalogue = ({cartItems, setCartItems}) => {
     };
 
     useEffect(() => {  
-            fetch('http://localhost:8080/books',{method:'GET',headers:{'content-type':'application/json'}})
+        const params = new URLSearchParams();
+        params.append('parameter', sortSelected);
+        params.append('pattern', searchText);
+
+            fetch('http://localhost:8080/books?'+params,{method:'GET',headers:{'content-type':'application/json'}})
                 .then(res => {
                     if (!res.ok){
                         throw Error('Could not fetch data for that resource');
@@ -100,7 +104,7 @@ const Catalogue = ({cartItems, setCartItems}) => {
                             <label class="form-check-label" for="search_filter">Search By: </label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="search_filter" id="title" value="title" checked={sortSelected === "title"} onChange={handleSearchType}/>
+                            <input class="form-check-input" type="radio" name="search_filter" id="bookname" value="bookname" checked={sortSelected === "bookname"} onChange={handleSearchType}/>
                             <label class="form-check-label" for="search_filter1">Title</label>
                         </div>
                         <div class="form-check form-check-inline">
