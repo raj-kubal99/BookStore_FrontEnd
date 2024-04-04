@@ -4,11 +4,12 @@ import "../index.css"
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
 const Catalogue = ({cartItems, setCartItems}) => {
-    const [books,setBooks] = useState();
+    const [books,setBooks] = useState();                                // when we want to use local seach instead of API, this state contains all books
     const [sortSelected,setSortSelected] = useState('bookname');
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [catalogueBooks,setCatalogueBooks] = useState();
     const [searchText,setSearchText] = useState('');
+    const [fetchCall,setFetchCall] = useState(true);
 
     const preventSearch = (e) => {
         e.preventDefault(); // Prevent form submission and page refresh
@@ -38,7 +39,8 @@ const Catalogue = ({cartItems, setCartItems}) => {
 
     // Search Bar Functionality
     const handleSearch = (searchTerm) => {
-        if (searchTerm==""){
+        fetchCall?setFetchCall(false):setFetchCall(true)
+        /*if (searchTerm==""){
             setCatalogueBooks(books);
         }
         else{
@@ -53,6 +55,7 @@ const Catalogue = ({cartItems, setCartItems}) => {
                 setCatalogueBooks(filteredData);
             }
         }
+        */
     };
 
     useEffect(() => {  
@@ -74,7 +77,7 @@ const Catalogue = ({cartItems, setCartItems}) => {
                 .catch(err => {
                     console.log(err);
                 })
-    }, []);
+    }, [fetchCall]);
     
 
     // Add Items to Cart 
