@@ -47,7 +47,7 @@ const ProductDetails = ({cartItems, setCartItems, addedToCart, setAddedToCart}) 
      *  }
      */
     useEffect(() => {  
-        fetch('http://localhost:8080/productinfo/'+id,{method:'GET',headers:{'content-type':'application/json'}})
+        fetch('https://bookstore-backend-go67.onrender.com/productinfo/'+id,{method:'GET',headers:{'content-type':'application/json'}})
             .then(res => {
                 if (!res.ok){
                     throw Error('Could not fetch data for that resource');

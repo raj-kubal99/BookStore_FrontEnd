@@ -65,7 +65,7 @@ const Catalogue = ({cartItems, setCartItems, addedToCart, setAddedToCart}) => {
         params.append('parameter', sortSelected);
         params.append('pattern', searchText);
 
-            fetch('http://localhost:8080/books?'+params,{method:'GET',headers:{'content-type':'application/json'}})
+            fetch('https://bookstore-backend-go67.onrender.com/books?'+params,{method:'GET',headers:{'content-type':'application/json'}})
                 .then(res => {
                     if (!res.ok){
                         throw Error('Could not fetch data for that resource');

@@ -63,7 +63,7 @@ const Cart = ({cartItems, setCartItems, setAddedToCart}) => {
           cartItems, "Amount":totalPrice
         };
         console.log(dataToSend);
-        fetch('http://localhost:8080/order', {
+        fetch('https://bookstore-backend-go67.onrender.com/order', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
